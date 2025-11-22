@@ -390,6 +390,52 @@ namespace SimStarter.UI
             LogTextBox.Clear();
         }
 
+        private void SimsList_RightClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if ((e.OriginalSource as FrameworkElement)?.DataContext is SimApp sim)
+            {
+                OpenInExplorer(sim.Path);
+            }
+        }
+
+        private void AddonsList_RightClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if ((e.OriginalSource as FrameworkElement)?.DataContext is AddonApp addon)
+            {
+                OpenInExplorer(addon.Path);
+            }
+        }
+
+        private void OpenInExplorer(string path)
+        {
+            try
+            {
+                var normalized = PathUtil.NormalizePath(path);
+                if (string.IsNullOrWhiteSpace(normalized))
+                {
+                    MessageBox.Show("No path configured.", "Open in Explorer", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                var dir = File.Exists(normalized) ? Path.GetDirectoryName(normalized) : normalized;
+                if (string.IsNullOrWhiteSpace(dir) || !Directory.Exists(dir))
+                {
+                    MessageBox.Show("Path not found.", "Open in Explorer", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = dir,
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Open in Explorer", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
         private async void CheckUpdates_Click(object sender, RoutedEventArgs e)
         {
             AppendLog("Checking for updates...");

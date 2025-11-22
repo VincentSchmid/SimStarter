@@ -23,7 +23,7 @@
                     <TextBlock Grid.Row="1" Text="Add each primary sim executable here (one per sim)."
                                Foreground="#666"
                                Margin="0,0,0,8"/>
-                    <ListBox x:Name="SimsList" Grid.Row="2">
+                    <ListBox x:Name="SimsList" Grid.Row="2" MouseRightButtonUp="SimsList_RightClick">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <DockPanel Margin="0,4">
@@ -70,7 +70,7 @@
                     <TextBlock Grid.Row="1" Text="Add supporting tools (CrewChief, SimHub, etc.). Reuse them across starters."
                                Foreground="#666"
                                Margin="0,0,0,8"/>
-                    <ListBox x:Name="AddonsList" Grid.Row="2">
+                    <ListBox x:Name="AddonsList" Grid.Row="2" MouseRightButtonUp="AddonsList_RightClick">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <DockPanel Margin="0,4">
