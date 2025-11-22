@@ -45,7 +45,7 @@ namespace SimStarter.UI
                     return UpdateResult.NoUpdate;
                 }
 
-                var asset = latest.GetAssetForPlatform("SimStarter.UI", ".zip");
+                var asset = latest.GetAssetForPlatform("SimStarter.UI", ".zip", log);
                 if (asset == null || string.IsNullOrWhiteSpace(asset.BrowserDownloadUrl) || string.IsNullOrWhiteSpace(asset.Name))
                 {
                     log("No suitable release asset found.");
@@ -149,16 +149,39 @@ endlocal
             public string? Name { get; set; }
             public ReleaseAsset[] Assets { get; set; } = Array.Empty<ReleaseAsset>();
 
-            public ReleaseAsset? GetAssetForPlatform(string prefix, string suffix)
+            public ReleaseAsset? GetAssetForPlatform(string prefix, string suffix, Action<string> log)
             {
+                if (Assets.Length == 0)
+                {
+                    log("Release has no assets.");
+                    return null;
+                }
+
+                log($"Found assets: {string.Join(", ", Assets.Select(a => a.Name))}");
+
                 foreach (var asset in Assets)
                 {
                     if (asset.Name != null &&
-                        asset.Name.StartsWith(prefix, StringComparison.OrdinalIgnoreCase) &&
-                        asset.Name.EndsWith(suffix, StringComparison.OrdinalIgnoreCase))
+                        asset.Name.EndsWith(suffix, StringComparison.OrdinalIgnoreCase) &&
+                        asset.Name.IndexOf(prefix, StringComparison.OrdinalIgnoreCase) >= 0)
                     {
                         return asset;
                     }
+                }
+
+                // Fallback: any zip
+                var anyZip = Assets.FirstOrDefault(a => a.Name != null && a.Name.EndsWith(suffix, StringComparison.OrdinalIgnoreCase));
+                if (anyZip != null)
+                {
+                    log($"Using fallback asset: {anyZip.Name}");
+                    return anyZip;
+                }
+
+                // Fallback: first asset
+                if (Assets.Length > 0)
+                {
+                    log($"Using first asset as last resort: {Assets[0].Name}");
+                    return Assets[0];
                 }
                 return null;
             }
