@@ -1,0 +1,22 @@
+<Project>
+  <PropertyGroup>
+    <!-- Prefer env-provided tag (e.g. GitHub Actions) -->
+    <GitTagRaw Condition="'$(GitTagRaw)'=='' and '$(GITHUB_REF_NAME)'!=''">$(GITHUB_REF_NAME)</GitTagRaw>
+    <GitTagRaw Condition="'$(GitTagRaw)'=='' and '$(GIT_TAG)'!=''">$(GIT_TAG)</GitTagRaw>
+  </PropertyGroup>
+
+  <Target Name="SetVersionFromGit" BeforeTargets="GenerateAssemblyInfo" Condition="'$(Version)'==''">
+    <!-- If no env tag, try git describe -->
+    <Exec Command="git describe --tags --abbrev=0" ConsoleToMSBuild="true" IgnoreExitCode="true" Condition="'$(GitTagRaw)'==''">
+      <Output TaskParameter="ConsoleOutput" PropertyName="GitTagRaw"/>
+    </Exec>
+
+    <PropertyGroup Condition="'$(GitTagRaw)'!=''">
+      <GitTagStripped>$(GitTagRaw.Replace('refs/tags/','').Replace('v','').Replace('V',''))</GitTagStripped>
+      <Version Condition="'$(Version)'==''">$(GitTagStripped)</Version>
+      <FileVersion Condition="'$(FileVersion)'=='' and '$(GitTagStripped)'!=''">$(GitTagStripped)</FileVersion>
+      <AssemblyVersion Condition="'$(AssemblyVersion)'=='' and '$(GitTagStripped)'!=''">$(GitTagStripped)</AssemblyVersion>
+      <InformationalVersion Condition="'$(InformationalVersion)'=='' and '$(GitTagRaw)'!=''">$(GitTagRaw)</InformationalVersion>
+    </PropertyGroup>
+  </Target>
+</Project>

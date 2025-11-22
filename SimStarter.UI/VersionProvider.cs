@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Linq;
 
 namespace SimStarter.UI
 {
@@ -9,12 +10,13 @@ namespace SimStarter.UI
         public static string GetVersionString()
         {
             var fileVersion = ReadVersionFile();
-            if (!string.IsNullOrWhiteSpace(fileVersion))
-            {
-                return fileVersion!;
-            }
+            if (!string.IsNullOrWhiteSpace(fileVersion)) return fileVersion!;
 
             var asm = Assembly.GetExecutingAssembly();
+            var infoAttr = asm.GetCustomAttributes<AssemblyInformationalVersionAttribute>()
+                .FirstOrDefault()?.InformationalVersion;
+            if (!string.IsNullOrWhiteSpace(infoAttr)) return infoAttr!;
+
             var v = asm.GetName().Version;
             return v != null ? v.ToString() : "0.0.0";
         }
