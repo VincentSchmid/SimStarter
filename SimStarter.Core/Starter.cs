@@ -152,6 +152,7 @@ namespace SimStarter.Core
 
             try
             {
+                var stopwatch = Stopwatch.StartNew();
                 var startInfo = new ProcessStartInfo
                 {
                     FileName = normalizedPath,
@@ -177,7 +178,22 @@ namespace SimStarter.Core
                 if (waitForExit)
                 {
                     process.WaitForExit();
-                    log($"[DONE] {name} exited with code {process.ExitCode}.");
+                    stopwatch.Stop();
+                    log($"[DONE] {name} exited with code {process.ExitCode} in {stopwatch.Elapsed.TotalSeconds:F1}s.");
+                }
+                else
+                {
+                    // Quick health check: see if it dies immediately
+                    var exitedQuickly = process.WaitForExit(2000);
+                    stopwatch.Stop();
+                    if (exitedQuickly)
+                    {
+                        log($"[WARN] {name} exited early with code {process.ExitCode} after {stopwatch.Elapsed.TotalSeconds:F1}s.");
+                    }
+                    else
+                    {
+                        log($"[OK] {name} started in {stopwatch.Elapsed.TotalSeconds:F1}s.");
+                    }
                 }
             }
             catch (Exception ex)
