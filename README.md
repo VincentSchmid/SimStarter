@@ -26,6 +26,7 @@ SimStarter is a Windows launcher for racing sims and their companion tools. It p
 - You bring your own sims and addons; SimStarter does not include them.
 - Add sims and addons you already have installed, then create “Starters” that pair a single sim with selected addons.
 - Launch starters from the app, or create desktop/Start Menu shortcuts whose icons reflect the sim and included addons.
+- Right-click a sim or addon in the UI to open its location in Explorer.
 
 ## Config
 Profiles/config are stored alongside the built binaries as `profiles.json`. Use the UI to manage sims/addons/starters.
