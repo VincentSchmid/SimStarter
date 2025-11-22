@@ -190,6 +190,8 @@ endlocal
         private sealed class ReleaseAsset
         {
             public string? Name { get; set; }
+
+            [JsonPropertyName("browser_download_url")]
             public string? BrowserDownloadUrl { get; set; }
         }
     }
