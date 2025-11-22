@@ -16,10 +16,10 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 10.0.x
-          include-prerelease: true
+          dotnet-quality: preview
 
       - name: Restore
-        run: dotnet restore SimStarter.UI/SimStarter.UI.csproj
+        run: dotnet restore SimStarter.UI/SimStarter.UI.csproj --runtime win-x64
 
       - name: Publish UI (Release, win-x64)
         run: dotnet publish SimStarter.UI/SimStarter.UI.csproj --configuration Release --runtime win-x64 --no-restore --output artifacts/SimStarter.UI
@@ -29,6 +29,15 @@ jobs:
         run: |
           $zipName = "SimStarter.UI-$('${{ github.ref_name }}').zip"
           Compress-Archive -Path artifacts/SimStarter.UI/* -DestinationPath artifacts/$zipName
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: SimStarter UI ${{ github.ref_name }}
+          files: artifacts/SimStarter.UI-${{ github.ref_name }}.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
