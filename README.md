@@ -17,14 +17,15 @@ SimStarter is a Windows launcher for racing sims and their companion tools. It p
 - `SimStarter.UI` (WPF): tabbed UI to manage sims/addons/starters, create shortcuts, and start profiles.
 - `SimStarter.IconTests`: icon verification tests.
 
-## Build
-```bash
-dotnet build SimStarter.sln
-```
+## Getting it
+- Download the latest UI ZIP from the [Releases](https://github.com/puter/SimStarter/releases) page.
+- Extract and run `SimStarter.UI.exe`.
+- (Optional) CLI: build/run locally with `dotnet run --project SimStarter.csproj`.
 
-## Run
-- UI: `dotnet run --project SimStarter.UI/SimStarter.UI.csproj`
-- CLI: `dotnet run --project SimStarter.csproj`
+## What it does (and doesn’t)
+- You bring your own sims and addons; SimStarter does not include them.
+- Add sims and addons you already have installed, then create “Starters” that pair a single sim with selected addons.
+- Launch starters from the app, or create desktop/Start Menu shortcuts whose icons reflect the sim and included addons.
 
 ## Config
 Profiles/config are stored alongside the built binaries as `profiles.json`. Use the UI to manage sims/addons/starters.
