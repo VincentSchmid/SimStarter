@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using SimStarter.Core;
 using MessageBox = System.Windows.MessageBox;
+using WpfApp = System.Windows;
 
 namespace SimStarter.UI
 {
@@ -14,10 +15,16 @@ namespace SimStarter.UI
     {
         private ProfilesConfig _config = null!;
         private bool _isRunning;
+        public string VersionLabel { get; }
+
+        private const string RepoOwner = "puter";
+        private const string RepoName = "SimStarter";
 
         public MainWindow()
         {
             InitializeComponent();
+            VersionLabel = $"v{VersionProvider.GetVersionString()}";
+            DataContext = this;
             LoadConfig();
         }
 
@@ -381,6 +388,21 @@ namespace SimStarter.UI
         private void ClearLog_Click(object sender, RoutedEventArgs e)
         {
             LogTextBox.Clear();
+        }
+
+        private async void CheckUpdates_Click(object sender, RoutedEventArgs e)
+        {
+            AppendLog("Checking for updates...");
+            if (!Version.TryParse(VersionProvider.GetVersionString(), out var currentVersion))
+            {
+                currentVersion = new Version(0, 0, 0);
+            }
+
+            var result = await UpdateService.CheckForUpdatesAsync(RepoOwner, RepoName, currentVersion, AppendLog);
+            if (result == UpdateService.UpdateResult.UpdatingAndRestarting)
+            {
+                WpfApp.Application.Current?.Shutdown();
+            }
         }
 
         private void AppendLog(string message)
