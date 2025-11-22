@@ -4,6 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace SimStarter.UI
@@ -23,16 +24,17 @@ namespace SimStarter.UI
         {
             try
             {
-                var latest = await FetchLatestReleaseAsync(owner, repo);
+                var latest = await FetchLatestReleaseAsync(owner, repo, log);
                 if (latest == null)
                 {
                     log("No release info found.");
                     return UpdateResult.Failed;
                 }
 
-                if (!Version.TryParse(latest.Tag?.TrimStart('v', 'V'), out var latestVersion))
+                var tagString = latest.TagName ?? latest.Tag ?? latest.Name;
+                if (!Version.TryParse(tagString?.TrimStart('v', 'V'), out var latestVersion))
                 {
-                    log($"Could not parse release version '{latest.Tag}'.");
+                    log($"Could not parse release version '{tagString}'.");
                     return UpdateResult.Failed;
                 }
 
@@ -116,19 +118,33 @@ endlocal
 ";
         }
 
-        private static async Task<ReleaseInfo?> FetchLatestReleaseAsync(string owner, string repo)
+        private static async Task<ReleaseInfo?> FetchLatestReleaseAsync(string owner, string repo, Action<string> log)
         {
             var url = $"https://api.github.com/repos/{owner}/{repo}/releases/latest";
             using var req = new HttpRequestMessage(HttpMethod.Get, url);
             req.Headers.UserAgent.ParseAdd("SimStarter-Updater");
+            var token = Environment.GetEnvironmentVariable("SIMSTARTER_GH_TOKEN")
+                        ?? Environment.GetEnvironmentVariable("GITHUB_TOKEN");
+            if (!string.IsNullOrWhiteSpace(token))
+            {
+                req.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            }
+
             var resp = await Http.SendAsync(req);
-            if (!resp.IsSuccessStatusCode) return null;
+            if (!resp.IsSuccessStatusCode)
+            {
+                log($"Update check failed: {(int)resp.StatusCode} {resp.ReasonPhrase}");
+                return null;
+            }
             var json = await resp.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<ReleaseInfo>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
 
         private sealed class ReleaseInfo
         {
+            [JsonPropertyName("tag_name")]
+            public string? TagName { get; set; }
+
             public string? Tag { get; set; }
             public string? Name { get; set; }
             public ReleaseAsset[] Assets { get; set; } = Array.Empty<ReleaseAsset>();

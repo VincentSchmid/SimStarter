@@ -17,7 +17,7 @@ namespace SimStarter.UI
         private bool _isRunning;
         public string VersionLabel { get; }
 
-        private const string RepoOwner = "puter";
+        private const string RepoOwner = "VincentSchmid";
         private const string RepoName = "SimStarter";
 
         public MainWindow()
