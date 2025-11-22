@@ -1,10 +1,9 @@
-name: Build UI
+name: Build UI on Tag
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    tags:
+      - 'v*'
 
 jobs:
   build-ui:
@@ -16,10 +15,23 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: 10.0.x
+          include-prerelease: true
 
       - name: Restore
         run: dotnet restore SimStarter.UI/SimStarter.UI.csproj
 
-      - name: Build (Release)
-        run: dotnet build SimStarter.UI/SimStarter.UI.csproj --configuration Release --no-restore
+      - name: Publish UI (Release, win-x64)
+        run: dotnet publish SimStarter.UI/SimStarter.UI.csproj --configuration Release --runtime win-x64 --no-restore --output artifacts/SimStarter.UI
+
+      - name: Zip artifact
+        shell: pwsh
+        run: |
+          $zipName = "SimStarter.UI-$('${{ github.ref_name }}').zip"
+          Compress-Archive -Path artifacts/SimStarter.UI/* -DestinationPath artifacts/$zipName
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SimStarter.UI-${{ github.ref_name }}
+          path: artifacts/SimStarter.UI-${{ github.ref_name }}.zip
