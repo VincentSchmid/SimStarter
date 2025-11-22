@@ -1,0 +1,214 @@
+<Window x:Class="SimStarter.UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Sim Starter"
+        Width="1100"
+        Height="680"
+        MinWidth="950"
+        MinHeight="560">
+    <DockPanel>
+        <TextBlock DockPanel.Dock="Top"
+                   FontSize="20"
+                   FontWeight="Bold"
+                   Text="Sim Starter"
+                   Margin="12,12,12,6"/>
+
+        <TabControl Margin="12">
+            <TabItem Header="Sims">
+                <Grid Margin="4" RowDefinitions="Auto,Auto,*,Auto">
+                    <TextBlock Grid.Row="0" Text="Sims catalog" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                    <TextBlock Grid.Row="1" Text="Add each primary sim executable here (one per sim)."
+                               Foreground="#666"
+                               Margin="0,0,0,8"/>
+                    <ListBox x:Name="SimsList" Grid.Row="2">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <DockPanel Margin="0,4">
+                                    <Image Width="22" Height="22" Margin="0,0,8,0"
+                                           Source="{Binding Path, Converter={StaticResource IconConverter}}"/>
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold"/>
+                                        <TextBlock Text="{Binding Path}" FontSize="11" Foreground="#666" TextTrimming="CharacterEllipsis"/>
+                                    </StackPanel>
+                                </DockPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <TextBlock Grid.Row="2"
+                               Text="No sims yet. Click Add to register a sim executable."
+                               Foreground="#888"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Items.Count, ElementName=SimsList}" Value="0">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <WrapPanel Grid.Row="3" Margin="0,8,0,0" HorizontalAlignment="Left">
+                        <Button Content="Add" Width="90" Margin="0,0,8,0" Click="AddSim_Click"
+                                ToolTip="Register a new sim executable"/>
+                        <Button Content="Edit" Width="90" Margin="0,0,8,0" Click="EditSim_Click"
+                                ToolTip="Edit the selected sim"/>
+                        <Button Content="Remove" Width="90" Click="RemoveSim_Click"
+                                ToolTip="Remove the selected sim"/>
+                    </WrapPanel>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Addons">
+                <Grid Margin="4" RowDefinitions="Auto,Auto,*,Auto">
+                    <TextBlock Grid.Row="0" Text="Addons catalog" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                    <TextBlock Grid.Row="1" Text="Add supporting tools (CrewChief, SimHub, etc.). Reuse them across starters."
+                               Foreground="#666"
+                               Margin="0,0,0,8"/>
+                    <ListBox x:Name="AddonsList" Grid.Row="2">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <DockPanel Margin="0,4">
+                                    <Image Width="22" Height="22" Margin="0,0,8,0"
+                                           Source="{Binding Path, Converter={StaticResource IconConverter}}"/>
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold"/>
+                                        <TextBlock Text="{Binding Path}" FontSize="11" Foreground="#666" TextTrimming="CharacterEllipsis"/>
+                                    </StackPanel>
+                                </DockPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <TextBlock Grid.Row="2"
+                               Text="No addons yet. Click Add to register tools like CrewChief or SimHub."
+                               Foreground="#888"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Items.Count, ElementName=AddonsList}" Value="0">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <WrapPanel Grid.Row="3" Margin="0,8,0,0" HorizontalAlignment="Left">
+                        <Button Content="Add" Width="90" Margin="0,0,8,0" Click="AddAddon_Click"
+                                ToolTip="Register a new addon tool"/>
+                        <Button Content="Edit" Width="90" Margin="0,0,8,0" Click="EditAddon_Click"
+                                ToolTip="Edit the selected addon"/>
+                        <Button Content="Remove" Width="90" Click="RemoveAddon_Click"
+                                ToolTip="Remove the selected addon"/>
+                    </WrapPanel>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Starters">
+                <Grid Margin="4" ColumnDefinitions="2.2*,3*" RowDefinitions="Auto,*,Auto">
+                    <TextBlock Grid.Row="0" Grid.ColumnSpan="2"
+                               Text="Create starters by pairing a Sim with one or more Addons, then save and start or create shortcuts."
+                               Foreground="#666"
+                               Margin="0,0,0,8"/>
+                    <Grid Grid.Row="1" Grid.Column="0" Margin="0,0,12,0" RowDefinitions="Auto,*,Auto">
+                        <TextBlock Text="Starters" FontWeight="SemiBold" Margin="0,0,0,6"/>
+                        <ListBox x:Name="StartersList" Grid.Row="1" DisplayMemberPath="Name" SelectionChanged="StartersList_SelectionChanged"/>
+                        <TextBlock Grid.Row="1"
+                                   Text="No starters yet. Click Add to create one."
+                                   Foreground="#888"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Items.Count, ElementName=StartersList}" Value="0">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        <WrapPanel Grid.Row="2" Margin="0,8,0,0" HorizontalAlignment="Left">
+                            <Button Content="Add" Width="90" Margin="0,0,8,0" Click="AddStarter_Click"
+                                    ToolTip="Create a new starter (Sim + Addons)"/>
+                            <Button Content="Remove" Width="90" Click="RemoveStarter_Click"
+                                    ToolTip="Remove the selected starter"/>
+                        </WrapPanel>
+                    </Grid>
+
+                    <Grid Grid.Row="1" Grid.Column="1" RowDefinitions="Auto,Auto,*">
+                        <TextBlock Text="Starter details" FontWeight="SemiBold" Margin="0,0,0,6"/>
+
+                        <Grid Grid.Row="1" Margin="0,0,0,8">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="Name" Margin="0,0,8,4" VerticalAlignment="Center"/>
+                            <TextBox x:Name="StarterNameBox" Grid.Column="1" Margin="0,0,0,6" ToolTip="Starter label shown in the list"/>
+
+                            <TextBlock Text="Sim" Grid.Row="1" Margin="0,0,8,4" VerticalAlignment="Center"/>
+                            <ComboBox x:Name="StarterSimBox" Grid.Row="1" Grid.Column="1" DisplayMemberPath="Name" SelectionChanged="StarterSimBox_SelectionChanged"
+                                      ToolTip="Choose which sim to launch first"/>
+
+                            <TextBlock Text="Addons" Grid.Row="2" Margin="0,0,8,4" VerticalAlignment="Top"/>
+                            <ListBox x:Name="StarterAddonsBox" Grid.Row="2" Grid.Column="1" Height="200"
+                                     ToolTip="Check addons to launch after the sim">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <CheckBox IsChecked="{Binding IsSelected}" Margin="0,0,6,0"/>
+                                            <TextBlock Text="{Binding Addon.Name}" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Grid>
+
+                        <WrapPanel Grid.Row="2" HorizontalAlignment="Left" Margin="0,8,0,0">
+                            <Button Content="Save Starter" Width="120" Margin="0,0,8,0" Click="SaveStarter_Click"
+                                    ToolTip="Save changes to this starter"/>
+                            <Button Content="Start" Width="90" Margin="0,0,8,0" Click="StartProfile_Click"
+                                    ToolTip="Run this starter now"/>
+                            <Button Content="Desktop Shortcut" Width="150" Margin="0,0,8,0" Click="DesktopShortcut_Click"
+                                    ToolTip="Create a desktop shortcut for this starter"/>
+                            <Button Content="Start Menu Shortcut" Width="170" Click="StartMenuShortcut_Click"
+                                    ToolTip="Create a Start Menu shortcut for this starter"/>
+                        </WrapPanel>
+                    </Grid>
+
+                    <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="0,12,0,0">
+                        <TextBlock Text="Log" FontWeight="SemiBold" Margin="0,0,0,6"/>
+                        <TextBox x:Name="LogTextBox"
+                                 VerticalScrollBarVisibility="Auto"
+                                 HorizontalScrollBarVisibility="Auto"
+                                 IsReadOnly="True"
+                                 AcceptsReturn="True"
+                                 TextWrapping="Wrap"
+                                 Height="120"/>
+                        <WrapPanel Margin="0,8,0,0" HorizontalAlignment="Left">
+                            <Button Content="Open profiles.json"
+                                    Width="150"
+                                    Click="OpenConfig_Click"/>
+                            <Button Content="Clear log"
+                                    Width="100"
+                                    Margin="8,0,0,0"
+                                    Click="ClearLog_Click"/>
+                        </WrapPanel>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</Window>

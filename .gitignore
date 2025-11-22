@@ -1,0 +1,35 @@
+# Build output
+bin/
+obj/
+
+# VS/VSCode
+.vs/
+.vscode/
+
+# User-specific
+*.user
+*.suo
+*.userosscache
+*.userprefs
+
+# Logs/temp
+*.log
+*.tmp
+*.tmp.*
+
+# Test results
+TestResult*/
+*.trx
+*.coverage
+*.coveragexml
+
+# Packages
+*.nupkg
+packages/
+
+# Rider/JetBrains
+.idea/
+
+# Other
+*.db
+profile-icons/
