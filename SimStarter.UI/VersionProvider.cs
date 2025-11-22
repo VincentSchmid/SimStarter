@@ -19,19 +19,14 @@ namespace SimStarter.UI
 
             var v = asm.GetName().Version;
             return v != null ? NormalizeVersionString(v.ToString()) : "0.0.0";
+
         }
 
         private static string? ReadVersionFile()
         {
-            try
-            {
-                var path = Path.Combine(AppContext.BaseDirectory, "VERSION");
-                return File.Exists(path) ? File.ReadAllText(path).Trim() : null;
-            }
-            catch
-            {
-                return null;
-            }
+            return TryReadVersionFile(AppContext.BaseDirectory)
+                   ?? TryReadVersionFile(Environment.CurrentDirectory)
+                   ?? TryReadVersionFile(SearchUpwardsForVersion(Environment.CurrentDirectory));
         }
 
         private static string NormalizeVersionString(string v)
@@ -58,6 +53,42 @@ namespace SimStarter.UI
 
             // Keep numeric/period only at start
             return trimmed;
+        }
+
+        private static string? TryReadVersionFile(string? baseDir)
+        {
+            if (string.IsNullOrWhiteSpace(baseDir)) return null;
+            try
+            {
+                var path = Path.Combine(baseDir, "VERSION");
+                return File.Exists(path) ? File.ReadAllText(path).Trim() : null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static string? SearchUpwardsForVersion(string startDir)
+        {
+            try
+            {
+                var dir = new DirectoryInfo(startDir);
+                while (dir != null)
+                {
+                    var candidate = Path.Combine(dir.FullName, "VERSION");
+                    if (File.Exists(candidate))
+                    {
+                        return dir.FullName;
+                    }
+                    dir = dir.Parent;
+                }
+            }
+            catch
+            {
+                // ignore
+            }
+            return null;
         }
     }
 }
