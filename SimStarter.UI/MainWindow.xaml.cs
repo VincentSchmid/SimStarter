@@ -393,7 +393,8 @@ namespace SimStarter.UI
         private async void CheckUpdates_Click(object sender, RoutedEventArgs e)
         {
             AppendLog("Checking for updates...");
-            if (!Version.TryParse(VersionProvider.GetVersionString(), out var currentVersion))
+            var versionStr = VersionProvider.GetVersionString();
+            if (!Version.TryParse(versionStr, out var currentVersion))
             {
                 currentVersion = new Version(0, 0, 0);
             }

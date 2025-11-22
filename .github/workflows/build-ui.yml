@@ -13,6 +13,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set version from tag
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}"
+          if ($tag -like "refs/tags/*") { $tag = $tag.Substring(10) }
+          if ($tag.StartsWith("v")) { $tag = $tag.Substring(1) }
+          if ([string]::IsNullOrWhiteSpace($tag)) { $tag = "0.0.0" }
+          "VERSION=$tag" | Out-File -FilePath $env:GITHUB_ENV -Append
+          Set-Content -Path VERSION -Value $tag
+          Write-Host "Using version $tag"
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4

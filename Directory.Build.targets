@@ -16,7 +16,7 @@
       <Version Condition="'$(Version)'==''">$(GitTagStripped)</Version>
       <FileVersion Condition="'$(FileVersion)'=='' and '$(GitTagStripped)'!=''">$(GitTagStripped)</FileVersion>
       <AssemblyVersion Condition="'$(AssemblyVersion)'=='' and '$(GitTagStripped)'!=''">$(GitTagStripped)</AssemblyVersion>
-      <InformationalVersion Condition="'$(InformationalVersion)'=='' and '$(GitTagRaw)'!=''">$(GitTagRaw)</InformationalVersion>
+      <InformationalVersion Condition="'$(InformationalVersion)'=='' and '$(GitTagStripped)'!=''">$(GitTagStripped)</InformationalVersion>
     </PropertyGroup>
   </Target>
 </Project>
