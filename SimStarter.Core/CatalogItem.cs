@@ -1,4 +1,4 @@
-namespace SimStarter.UI
+namespace SimStarter.Core
 {
     public sealed class CatalogItem
     {

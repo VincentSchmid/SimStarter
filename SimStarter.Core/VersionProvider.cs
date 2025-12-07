@@ -3,9 +3,9 @@ using System.IO;
 using System.Reflection;
 using System.Linq;
 
-namespace SimStarter.UI
+namespace SimStarter.Core
 {
-    internal static class VersionProvider
+    public static class VersionProvider
     {
         public static string GetVersionString()
         {

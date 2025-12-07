@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using SimStarter.Core;
 
-namespace SimStarter.UI
+namespace SimStarter.Core
 {
     public static class ShortcutService
     {

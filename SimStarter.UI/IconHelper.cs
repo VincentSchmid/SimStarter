@@ -1,6 +1,4 @@
 using System;
-using System.Drawing;
-using System.IO;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
@@ -13,13 +11,9 @@ namespace SimStarter.UI
     {
         public static ImageSource? GetIcon(string? path)
         {
-            var normalized = PathUtil.NormalizePath(path ?? string.Empty);
-            if (string.IsNullOrWhiteSpace(normalized) || !File.Exists(normalized))
-                return null;
-
             try
             {
-                using var icon = Icon.ExtractAssociatedIcon(normalized);
+                using var icon = IconExtractor.ExtractIcon(path);
                 if (icon == null) return null;
 
                 var img = Imaging.CreateBitmapSourceFromHIcon(

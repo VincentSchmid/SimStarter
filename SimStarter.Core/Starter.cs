@@ -135,7 +135,7 @@ namespace SimStarter.Core
             write("All configured apps have been started (or attempted).");
         }
 
-        private static void RunApp(string name, string path, string arguments, bool runAsAdmin, bool waitForExit, Action<string> log)
+        public static void RunApp(string name, string path, string arguments, bool runAsAdmin, bool waitForExit, Action<string> log)
         {
             var normalizedPath = PathUtil.NormalizePath(path);
             if (string.IsNullOrWhiteSpace(normalizedPath))

@@ -90,6 +90,24 @@ namespace SimStarter.UI
             SaveConfig();
         }
 
+        private void StartSim_Click(object sender, RoutedEventArgs e)
+        {
+            if (_isRunning) return;
+            if (SimsList.SelectedItem is not SimApp sim) return;
+
+            _isRunning = true;
+            AppendLog($"Starting '{sim.Name}' (without addons)...");
+            Task.Run(() =>
+            {
+                StarterRunner.RunApp(sim.Name, sim.Path, sim.Arguments, sim.RunAsAdmin, sim.WaitForExit, AppendLogFromBackground);
+            })
+            .ContinueWith(_ =>
+            {
+                _isRunning = false;
+                AppendLog("Done.");
+            }, TaskScheduler.FromCurrentSynchronizationContext());
+        }
+
         // Addons tab
         private void RefreshAddons()
         {

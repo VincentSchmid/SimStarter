@@ -58,8 +58,10 @@
                                 ToolTip="Register a new sim executable"/>
                         <Button Content="Edit" Width="90" Margin="0,0,8,0" Click="EditSim_Click"
                                 ToolTip="Edit the selected sim"/>
-                        <Button Content="Remove" Width="90" Click="RemoveSim_Click"
+                        <Button Content="Remove" Width="90" Margin="0,0,8,0" Click="RemoveSim_Click"
                                 ToolTip="Remove the selected sim"/>
+                        <Button Content="Start" Width="90" Margin="0,0,8,0" Click="StartSim_Click"
+                                ToolTip="Start the selected sim without addons"/>
                     </WrapPanel>
                 </Grid>
             </TabItem>
